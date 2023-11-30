@@ -270,7 +270,7 @@ if SERVER then
         end)
 
         --Add the status to the attacker too, so they know when it'll explode.
-        STATUS:AddTimedStatus(attacker, "ttt2_spicy_meatball_status",duration, true)
+        --STATUS:AddTimedStatus(attacker, "ttt2_spicy_meatball_status",duration, true)
 
         --Add a delayed burp
         timer.Simple(duration - 1, function()
@@ -285,7 +285,7 @@ if SERVER then
 
         --Spawn a spicy meatball that travels from the attacker to the target's eyepos.
         --This is only for animation.
-        SpicyMeatballAnim(ply, attacker)
+        --SpicyMeatballAnim(ply, attacker)
 
     end
 
