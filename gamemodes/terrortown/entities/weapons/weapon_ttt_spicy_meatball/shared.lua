@@ -147,18 +147,28 @@ function SWEP:Reload()
 end
 
 function IsValidAttack(attacker, ent, distance, trace)
+    local isHit, validHit = ComputeAttack(attacker, ent, distance, trace)
+    return isHit and validHit
+end
 
-    if distance > 100 then return false end
-    if not IsValid(ent) or not ent:IsPlayer() then return false end
+function ComputeAttack(attacker, ent, distance, trace)
+
+    local isHit = false
+    local validHit = false
+
+    if distance > 100 then return isHit, validHit end
+    if not IsValid(ent) or not ent:IsPlayer() then return isHit, validHit end
+
+    isHit = true
 
     if trace ~= nil then
 
         --Check if ent has a head HeadGroup
         local HasHead = HasHitGroup(ent, 1)
 
-        --If so, check if the trace hits the head HitGroup and return false if it doesn't.
+        --If so, check if the trace hits the head HitGroup and return if it doesn't.
         if HasHead then
-            if trace.HitGroup ~= 1 then return false end
+            if trace.HitGroup ~= 1 then return isHit, validHit end
         end
 
         --if not, see if the trace hit is close enough to ent's eyepos
@@ -176,7 +186,9 @@ function IsValidAttack(attacker, ent, distance, trace)
     ----local enteyes = ent:EyePos()
     ----local entaim = ent:GetAimVector()
 
-    return true
+    validHit = true
+
+    return isHit, validHit
 end
 
 function HasHitGroup(ent, targethitgroup)
@@ -323,7 +335,7 @@ if SERVER then
         if not IsValid(ent) then return false end
         if ent:IsPlayer() then 
             if not ent:Alive() then return false end
-            if SpecDM and (ent.IsGhost and ent:IsGhost()) then return end
+            if SpecDM and (ent.IsGhost and ent:IsGhost()) then return false end
         end
 
         return true
@@ -368,7 +380,7 @@ if SERVER then
         --Easter egg :)
         if target:IsPlayer() then
             timer.Simple(2, function()
-                if target:Alive() then
+                if IsTangible(target) then
                     target:EmitSound(sounds["thatsaspicymeatball"])
                 end
             end)
@@ -398,30 +410,41 @@ if CLIENT then
 
 		if not IsValid(c_wep) or c_wep:GetClass() ~= "weapon_ttt_spicy_meatball" then return end
 
-        if not IsValidAttack(client, ent, distance, client:GetEyeTrace()) then return end
+        local isHit, validHit = ComputeAttack(client, ent, distance, client:GetEyeTrace())
 
-		-- enable targetID rendering
-		tData:EnableOutline()
-		tData:SetOutlineColor(client:GetRoleColor())
+        if isHit and not validHit then
+            tData:AddDescriptionLine(
+                TryT("targetid_spicy_meatball_invalidattack"),
+                COLOR_ORANGE
+            )
+            return
+        end
 
-		tData:AddDescriptionLine(
-			TryT("targetid_spicy_meatball_validattack"),
-			role_color
-		)
+        if validHit then
+            -- enable targetID rendering
+            tData:EnableOutline()
+            tData:SetOutlineColor(client:GetRoleColor())
 
-		-- draw instant-kill maker
-		local x = ScrW() * 0.5
-		local y = ScrH() * 0.5
+            tData:AddDescriptionLine(
+                TryT("targetid_spicy_meatball_validattack"),
+                role_color
+            )
 
-		surface.SetDrawColor(clr(role_color))
+            -- draw instant-kill maker
+            local x = ScrW() * 0.5
+            local y = ScrH() * 0.5
 
-		local outer = 20
-		local inner = 10
+            surface.SetDrawColor(clr(role_color))
 
-		surface.DrawLine(x - outer, y - outer, x - inner, y - inner)
-		surface.DrawLine(x + outer, y + outer, x + inner, y + inner)
+            local outer = 20
+            local inner = 10
+            
+            surface.DrawLine(x - outer, y - outer, x - inner, y - inner)
+            surface.DrawLine(x + outer, y + outer, x + inner, y + inner)
 
-		surface.DrawLine(x - outer, y + outer, x - inner, y + inner)
-		surface.DrawLine(x + outer, y - outer, x + inner, y - inner)
+            surface.DrawLine(x - outer, y + outer, x - inner, y + inner)
+            surface.DrawLine(x + outer, y - outer, x + inner, y - inner)
+        end
+
 	end)
 end
