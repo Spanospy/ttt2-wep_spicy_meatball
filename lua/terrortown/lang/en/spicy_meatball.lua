@@ -15,5 +15,7 @@ L["label_spicy_meatball_detonate_time"] = "Fuse length"
 L["label_spicy_meatball_radius"] = "Explosion radius"
 L["label_spicy_meatball_heal"] = "Amount of health victim receives"
 
+L["help_spicy_meatball_primary"] = "Melee"
+L["targetid_spicy_meatball_notinrange"] = "Get closer!"
 L["targetid_spicy_meatball_invalidattack"] = "Aim for their mouth!"
 L["targetid_spicy_meatball_validattack"] = "INSTANT FEED"

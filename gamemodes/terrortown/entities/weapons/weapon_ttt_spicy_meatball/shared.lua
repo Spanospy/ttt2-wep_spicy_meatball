@@ -54,6 +54,11 @@ if CLIENT then
         desc = "weapon_spicy_meatball_desc"
     }
 
+    function SWEP:Initialize()
+        self:AddTTT2HUDHelp("help_spicy_meatball_primary")
+        return self.BaseClass.Initialize(self)
+    end
+
     function SWEP:AddToSettingsMenu(parent)
 		local form = vgui.CreateTTT2Form(parent, "header_equipment_additional")
 
@@ -410,17 +415,23 @@ if CLIENT then
 
 		if not IsValid(c_wep) or c_wep:GetClass() ~= "weapon_ttt_spicy_meatball" then return end
 
+        if not ent:IsPlayer() then return end
+
         local isHit, validHit = ComputeAttack(client, ent, distance, client:GetEyeTrace())
 
-        if isHit and not validHit then
+        if not isHit then
+            tData:AddDescriptionLine(
+                TryT("targetid_spicy_meatball_notinrange"),
+                COLOR_ORANGE
+            )
+
+        elseif not validHit then
             tData:AddDescriptionLine(
                 TryT("targetid_spicy_meatball_invalidattack"),
                 COLOR_ORANGE
             )
-            return
-        end
-
-        if validHit then
+            
+        elseif validHit then
             -- enable targetID rendering
             tData:EnableOutline()
             tData:SetOutlineColor(client:GetRoleColor())
