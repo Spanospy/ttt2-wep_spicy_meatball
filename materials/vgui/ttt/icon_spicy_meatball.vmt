@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
- "$basetexture" "vgui/ttt/spicy_meatball_icon"
+ "$basetexture" "vgui/ttt/icon_spicy_meatball"
  "$vertexcolor" 1
  "$vertexalpha" 1
  "$translucent" 1

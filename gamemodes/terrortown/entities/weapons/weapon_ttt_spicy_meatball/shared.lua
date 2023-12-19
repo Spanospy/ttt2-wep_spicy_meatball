@@ -1,7 +1,7 @@
 
 if SERVER then
 	AddCSLuaFile()
-    resource.AddFile("materials/vgui/ttt/spicy_meatball_icon.vmt")
+    resource.AddFile("materials/vgui/ttt/icon_spicy_meatball.vmt")
     resource.AddFile("sound/spicy_meatball/spicy_meatball_burp.wav")
     resource.AddFile("sound/spicy_meatball/hatsaspicymeatball.wav")
 end
@@ -9,10 +9,10 @@ end
 if CLIENT then
     hook.Add("Initialize", "ttt2_spicy_meatball_init", function()
 		STATUS:RegisterStatus("ttt2_spicy_meatball_status", {
-			hud = Material("vgui/ttt/spicy_meatball_effect_icon.png"),
+			hud = Material("vgui/ttt/hud_icon_spicy_meatball.png"),
 			type = "bad",
-			name = "status_spicy_meatball_name",
-			sidebarDescription = "status_spicy_meatball_description"
+			name = "status_spicy_meatball",
+			sidebarDescription = "status_spicy_meatball_desc"
 		})
 	end)
 end
@@ -46,24 +46,24 @@ if CLIENT then
 	SWEP.ViewModelFOV = 54
     SWEP.DrawCrosshair = false
 
-	SWEP.Icon = "vgui/ttt/spicy_meatball_icon.vtf"
+	SWEP.Icon = "vgui/ttt/icon_spicy_meatball.vtf"
 
     SWEP.EquipMenuData = {
         type = "item_weapon",
-        name = "ttt2_weapon_spicy_meatball",
-        desc = "ttt2_weapon_spicy_meatball_desc"
+        name = "weapon_spicy_meatball",
+        desc = "weapon_spicy_meatball_desc"
     }
 
     function SWEP:AddToSettingsMenu(parent)
 		local form = vgui.CreateTTT2Form(parent, "header_equipment_additional")
 
         form:MakeHelp({
-            label = "label_ttt2_spicy_meatball_damage_scaling"
+            label = "label_spicy_meatball_damage_scaling_desc"
         })
 
 		form:MakeSlider({
 			serverConvar = "ttt2_spicy_meatball_detonate_time",
-			label = "label_ttt2_spicy_meatball_detonate_time",
+			label = "label_spicy_meatball_detonate_time",
 			min = 0,
 			max = 15,
 			decimal = 0
@@ -71,7 +71,7 @@ if CLIENT then
 
         form:MakeSlider({
 			serverConvar = "ttt2_spicy_meatball_radius",
-			label = "label_ttt2_spicy_meatball_radius",
+			label = "label_spicy_meatball_radius",
 			min = 0,
 			max = 500,
 			decimal = 0
@@ -79,7 +79,7 @@ if CLIENT then
 
         form:MakeSlider({
 			serverConvar = "ttt2_spicy_meatball_heal",
-			label = "label_ttt2_spicy_meatball_heal",
+			label = "label_spicy_meatball_heal",
 			min = 0,
 			max = 100,
 			decimal = 0
