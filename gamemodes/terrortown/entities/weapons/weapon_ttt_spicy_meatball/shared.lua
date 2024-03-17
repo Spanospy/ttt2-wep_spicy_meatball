@@ -134,11 +134,11 @@ function SWEP:PrimaryAttack()
     --self:SendWeaponAnim(ACT_VM_THROW)
 
 
-    if SERVER and IsValidAttack(owner, ent, distance, trace) then
+    if SERVER then
         owner:SetAnimation(PLAYER_ATTACK1)
-        ent:EmitSound(sounds["force"], 0.75)
-        self:EmitSound(sounds["impact"], 2)
-        self:EmitSound(sounds["pin"], 2)
+        ent:EmitSound(sounds["force"], 75, 100, 0.75, CHAN_WEAPON )
+        self:EmitSound(sounds["impact"], 75, 100, 1, CHAN_WEAPON )
+        self:EmitSound(sounds["pin"], 75, 100, 1, CHAN_WEAPON )
         GiveSpicyMeatball(ent, owner)
         self:Remove()
     end
@@ -266,7 +266,7 @@ if SERVER then
         --Heal player, for fun :)
         if heal > 0 and ply:GetMaxHealth() > ply:Health() then
             ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + heal))
-            ply:EmitSound(sounds["fed"])
+            ply:EmitSound(sounds["fed"], 60, 100, 0.75, CHAN_WEAPON )
         end
 
         --Ensure lookup table for Spicy Meatball explosion timers is setup
@@ -296,7 +296,7 @@ if SERVER then
 
             if not IsTangible(target) then return end
 
-            target:EmitSound(sounds["burp"])
+            target:EmitSound(sounds["burp"], 75, 100, 1, CHAN_WEAPON )
 
         end)
 
@@ -349,6 +349,8 @@ if SERVER then
 
     function SpicyMeatballExplosion(target, attacker, lutName)
 
+        if GetRoundState() == ROUND_PREP then return end
+
         if not IsTangible(target) then return end
     
         local meatball = ents.Create("weapon_ttt_spicy_meatball") --temporary entity for BlastDamage, since the original weapon has already been removed.
@@ -367,6 +369,10 @@ if SERVER then
         effect:SetScale(radius * 0.3)
         effect:SetRadius(radius)
         effect:SetMagnitude(damage)
+
+        if GetRoundState() ~= ROUND_POST and attacker:GetSubRole() == ROLE_JESTER then
+            damage = 0
+        end
     
         util.Effect("Explosion", effect, true, true)
         
@@ -386,7 +392,7 @@ if SERVER then
         if target:IsPlayer() then
             timer.Simple(2, function()
                 if IsTangible(target) then
-                    target:EmitSound(sounds["thatsaspicymeatball"])
+                    target:EmitSound(sounds["thatsaspicymeatball"], 75, 100, 1, CHAN_WEAPON )
                 end
             end)
         end
