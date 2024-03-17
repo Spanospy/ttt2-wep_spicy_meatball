@@ -134,7 +134,7 @@ function SWEP:PrimaryAttack()
     --self:SendWeaponAnim(ACT_VM_THROW)
 
 
-    if SERVER then
+    if SERVER and IsValidAttack(owner, ent, distance, trace) then
         owner:SetAnimation(PLAYER_ATTACK1)
         ent:EmitSound(sounds["force"], 75, 100, 0.75, CHAN_WEAPON )
         self:EmitSound(sounds["impact"], 75, 100, 1, CHAN_WEAPON )
