@@ -121,6 +121,11 @@ SWEP.NoSights = true
 function SWEP:PrimaryAttack()
 
     local owner = self:GetOwner()
+    if not IsValid(owner) then
+        return
+    end
+
+    owner:LagCompensation(true)
 
 	local trace = owner:GetEyeTrace() --TODO check if hats block head hitgroup hits
 	local distance = trace.StartPos:Distance(trace.HitPos)
@@ -128,11 +133,7 @@ function SWEP:PrimaryAttack()
 
     if CLIENT and not IsValidAttack(owner, ent, distance, trace) then 
         self:EmitSound(sounds["deny"])
-        return 
     end
-
-    --self:SendWeaponAnim(ACT_VM_THROW)
-
 
     if SERVER and IsValidAttack(owner, ent, distance, trace) then
         owner:SetAnimation(PLAYER_ATTACK1)
@@ -143,6 +144,7 @@ function SWEP:PrimaryAttack()
         self:Remove()
     end
 
+    owner:LagCompensation(false)
 end
 
 function SWEP:SecondaryAttack()
