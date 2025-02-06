@@ -3,7 +3,7 @@ if SERVER then
 	AddCSLuaFile()
     resource.AddFile("materials/vgui/ttt/icon_spicy_meatball.vmt")
     resource.AddFile("sound/spicy_meatball/spicy_meatball_burp.wav")
-    resource.AddFile("sound/spicy_meatball/hatsaspicymeatball.wav")
+    resource.AddFile("sound/spicy_meatball/thatsaspicymeatball.wav")
 end
 
 if CLIENT then
