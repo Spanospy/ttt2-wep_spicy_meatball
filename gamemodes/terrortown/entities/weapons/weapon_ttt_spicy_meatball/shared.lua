@@ -351,52 +351,53 @@ if SERVER then
 
     function SpicyMeatballExplosion(target, attacker, lutName)
 
-        if GetRoundState() == ROUND_PREP then return end
+        if GetRoundState() > ROUND_PREP then
 
-        if not IsTangible(target) then return end
+            if not IsTangible(target) then return end
     
-        local meatball = ents.Create("weapon_ttt_spicy_meatball") --temporary entity for BlastDamage, since the original weapon has already been removed.
-        local radius = GetConVar("ttt2_spicy_meatball_radius"):GetInt()
-        local damage = 200 * (meatball.damageScaling or 1)
+            local meatball = ents.Create("weapon_ttt_spicy_meatball") --temporary entity for BlastDamage, since the original weapon has already been removed.
+            local radius = GetConVar("ttt2_spicy_meatball_radius"):GetInt()
+            local damage = 200 * (meatball.damageScaling or 1)
 
-        --GetPos() gives us the feet of the target if it's a player. So let's adjust that and get the center of the ent's collision instead.
-        local basepos = target:GetPos()
-        local posmin, posmax = target:GetCollisionBounds()
-        local pos = ((posmin + basepos) + (posmax + basepos)) / 2
+            --GetPos() gives us the feet of the target if it's a player. So let's adjust that and get the center of the ent's collision instead.
+            local basepos = target:GetPos()
+            local posmin, posmax = target:GetCollisionBounds()
+            local pos = ((posmin + basepos) + (posmax + basepos)) / 2
 
     
-        local effect = EffectData()
-        effect:SetStart(pos)
-        effect:SetOrigin(pos)
-        effect:SetScale(radius * 0.3)
-        effect:SetRadius(radius)
-        effect:SetMagnitude(damage)
+            local effect = EffectData()
+            effect:SetStart(pos)
+            effect:SetOrigin(pos)
+            effect:SetScale(radius * 0.3)
+            effect:SetRadius(radius)
+            effect:SetMagnitude(damage)
 
-        if GetRoundState() ~= ROUND_POST and attacker:GetSubRole() == ROLE_JESTER then
-            damage = 0
-        end
+            if attacker:GetTeam() == TEAM_JESTER then
+                damage = 0
+            end
     
-        util.Effect("Explosion", effect, true, true)
+            util.Effect("Explosion", effect, true, true)
         
-        util.BlastDamage(meatball, attacker, pos, radius, damage)
+            util.BlastDamage(meatball, attacker, pos, radius, damage)
 
-        meatball:Remove()
+            meatball:Remove()
         
-        local trs = util.TraceLine({
-            start = pos + Vector(0, 0, 64),
-            endpos = pos + Vector(0, 0, -128),
-            filter = target
-        })
-        util.Decal("SmallScorch", trs.HitPos + trs.HitNormal, trs.HitPos - trs.HitNormal)
+            local trs = util.TraceLine({
+                start = pos + Vector(0, 0, 64),
+                endpos = pos + Vector(0, 0, -128),
+                filter = target
+            })
+            util.Decal("SmallScorch", trs.HitPos + trs.HitNormal, trs.HitPos - trs.HitNormal)
 
 
-        --Easter egg :)
-        if target:IsPlayer() then
-            timer.Simple(2, function()
-                if IsTangible(target) then
-                    target:EmitSound(sounds["thatsaspicymeatball"], 75, 100, 1, CHAN_WEAPON )
-                end
-            end)
+            --Easter egg :)
+            if target:IsPlayer() then
+                timer.Simple(2, function()
+                    if IsTangible(target) then
+                        target:EmitSound(sounds["thatsaspicymeatball"], 75, 100, 1, CHAN_WEAPON )
+                    end
+                end)
+            end
         end
         
         --Cleanup lookup table
