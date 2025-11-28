@@ -280,7 +280,13 @@ if SERVER then
         local lut = TTT2_Spicy_Meatball_ELookup[timerName]
 
         lut[1] = ply --Entity to place explosion at
-        lut[2] = attacker --Entity that will be attributed to causing the explosion
+
+        -- SPECIAL CASE: if an infected is feeding the meatball to another infected, treat the recipient as the attacker instead.
+        if ROLE_INFECTED and ply:GetRole() == ROLE_INFECTED and attacker:GetRole() == ROLE_INFECTED then
+            lut[2] = ply
+        else
+            lut[2] = attacker --Entity that will be attributed to causing the explosion
+        end
 
         --Add spicy meatball to player
         STATUS:AddTimedStatus(ply, "ttt2_spicy_meatball_status",duration, true)
